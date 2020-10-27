@@ -21,8 +21,13 @@ const buttonOut = document.querySelector('.button-out');
 
 let login = localStorage.getItem('delivery');
 
-function toogleModalAuth() {
+function toggleModalAuth() {
   modalAuth.classList.toggle('is-open');
+}
+
+function clearForm() {
+  loginInput.style.borderColor = '';
+  logInForm.reset();
 }
 
 function authorized() {
@@ -50,20 +55,35 @@ function notAuthorized() {
 
     function logIn(event) {
       event.preventDefault();
-      login = loginInput.value;
-      localStorage.setItem('delivery', login);
-      toogleModalAuth();
-      buttonAuth.removeEventListener('click', toogleModalAuth);
-      closeAuth.removeEventListener('click', toogleModalAuth);
-      logInForm.removeEventListener('submit', logIn);
-      logInForm.reset();
-      checkAuth();
+
+      if (loginInput.value.trim()) {
+        login = loginInput.value;
+        localStorage.setItem('delivery', login);
+        toggleModalAuth();
+
+        buttonAuth.removeEventListener('click', toggleModalAuth);
+        closeAuth.removeEventListener('click', toggleModalAuth);
+        logInForm.removeEventListener('submit', logIn);
+        logInForm.reset();
+        checkAuth();
+      } else {
+        loginInput.style.borderColor = '#ff0000';
+        loginInput.value = '';
+      }
+      
   }
 
-  buttonAuth.addEventListener('click', toogleModalAuth);
-  closeAuth.addEventListener('click', toogleModalAuth);
+  buttonAuth.addEventListener('click', toggleModalAuth);
+  closeAuth.addEventListener('click', toggleModalAuth);
   logInForm.addEventListener('submit', logIn);
+  modalAuth.addEventListener('click', function (event) {
+    if (event.target.classList.contains('is-open')) {
+      toggleModalAuth()
+    }
+  })
 }
+
+buttonAuth.addEventListener('click', clearForm);
 
 function checkAuth() {
   if (login) {
