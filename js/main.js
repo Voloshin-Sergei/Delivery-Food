@@ -23,6 +23,11 @@ let login = localStorage.getItem('delivery');
 
 function toggleModalAuth() {
   modalAuth.classList.toggle('is-open');
+  if (modalAuth.classList.contains('is-open')) {
+    disabledScroll();
+  } else {
+    enableScroll();
+  }
 }
 
 function clearForm() {
