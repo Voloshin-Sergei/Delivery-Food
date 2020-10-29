@@ -20,6 +20,11 @@ const cardsMenu = document.querySelector('.cards-menu');
 
 let login = localStorage.getItem('delivery');
 
+function validName (str) {
+  const regName = /^[a-zA-Z0-9-_\.]{1,20}$/;
+  return regName.test(str);
+}
+
 function toggleModal() {
   modal.classList.toggle("is-open");
 }
@@ -64,7 +69,7 @@ function notAuthorized() {
     function logIn(event) {
       event.preventDefault();
 
-      if (loginInput.value.trim()) {
+      if (validName(loginInput.value)) {
         login = loginInput.value;
         localStorage.setItem('delivery', login);
         toggleModalAuth();
