@@ -1,5 +1,6 @@
 'use strict';
 
+
 const cartButton = document.querySelector("#cart-button");
 const modal = document.querySelector(".modal");
 const close = document.querySelector(".close");
@@ -157,18 +158,23 @@ function createCardGood() {
 
 function openGoods(event) {
   const target = event.target;
-  const restaurant = target.closest('.card-restaurant');
 
-  if (restaurant) {
-    cardsMenu.textContent = '';
-    containerPromo.classList.add('hide');
-    restaurants.classList.add('hide');
-    menu.classList.remove('hide');
+  if (login) {
+      const restaurant = target.closest('.card-restaurant');
 
-  createCardGood();
-  createCardGood();
-  createCardGood();
+    if (restaurant) {
+      cardsMenu.textContent = '';
+      containerPromo.classList.add('hide');
+      restaurants.classList.add('hide');
+      menu.classList.remove('hide');
 
+    createCardGood();
+    createCardGood();
+    createCardGood();
+
+    }
+  } else {
+    toggleModalAuth();
   }
 
 }
@@ -187,3 +193,16 @@ checkAuth();
 createCardRestaurant();
 createCardRestaurant();
 createCardRestaurant();
+
+// Slider
+
+new Swiper('.swiper-container',{
+  sliderPerView: 1,
+  loop: true,
+  autoplay: true,
+  grabCursor: true,
+  pagination: {
+    el: '.swiper-pagination',
+    clickable: true,
+  },
+});
