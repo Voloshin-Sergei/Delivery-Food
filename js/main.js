@@ -17,6 +17,10 @@ const restaurants = document.querySelector('.restaurants');
 const menu = document.querySelector('.menu');
 const logo = document.querySelector('.logo');
 const cardsMenu = document.querySelector('.cards-menu');
+const restaurantTitle = document.querySelector('.restaurant-title');
+const restaurantRating = document.querySelector('.rating');
+const restaurantPrice = document.querySelector('.price');
+const restaurantCategory = document.querySelector('.category');
 
 let login = localStorage.getItem('delivery');
 
@@ -118,12 +122,14 @@ function checkAuth() {
 }
 
 
-function createCardRestaurant(restaurant) {
+function createCardRestaurant({ image, kitchen, name, price, products, stars, time_of_delivery }) {
 
-  const { image, kitchen, name, price, products, stars, time_of_delivery } = restaurant;
+  const  cardRestaurant = document.createElement('a');
+  cardRestaurant.className = 'card card-restaurant';
+  cardRestaurant.products = products;
+  cardRestaurant.info = {  kitchen, name, price, stars, };
 
   const card = `
-    <a class="card card-restaurant" data-products='${products}'>
     <img src="${image}" alt="image" class="card-image"/>
     <div class="card-text">
       <div class="card-heading">
@@ -139,9 +145,9 @@ function createCardRestaurant(restaurant) {
         <div class="category">${kitchen}</div>
       </div>
     </div>
-  </a>
 `;
-  cardsRestaurants.insertAdjacentHTML('beforeend', card);
+  cardRestaurant.insertAdjacentHTML('beforeend', card);
+  cardsRestaurants.insertAdjacentElement('beforeend', cardRestaurant);
 }
 
 function createCardGood(goods) {
@@ -152,7 +158,7 @@ function createCardGood(goods) {
   card.className = 'card';
 
   card.insertAdjacentHTML('beforeend', `
-    <img src="${image}" alt="image" class="card-image"/>
+    <img src="${image}" alt=${name} class="card-image"/>
     <div class="card-text">
       <div class="card-heading">
         <h3 class="card-title card-title-reg">${name}</h3>
@@ -186,7 +192,15 @@ function openGoods(event) {
       containerPromo.classList.add('hide');
       restaurants.classList.add('hide');
       menu.classList.remove('hide');
-      getData(`./db/${restaurant.dataset.products}`).then(function(data) {
+
+      const { name, kitchen, price, stars } = restaurant.info;
+
+      restaurantTitle.textContent = name;
+      restaurantRating.textContent = stars;
+      restaurantPrice.textContent = `От ${price} ₽`;
+      restaurantCategory.textContent = kitchen;
+
+      getData(`./db/${restaurant.products}`).then(function(data) {
         data.forEach(createCardGood);
       });
 
