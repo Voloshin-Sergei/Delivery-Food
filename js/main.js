@@ -63,6 +63,12 @@ function clearForm() {
   logInForm.reset();
 }
 
+function returnMain() {
+  containerPromo.classList.remove('hide');
+  restaurants.classList.remove('hide');
+  menu.classList.add('hide');
+}
+
 function authorized() {
 
   function logOut() {
@@ -74,6 +80,7 @@ function authorized() {
     cartButton.style.display = '';
     buttonOut.removeEventListener('click', logOut)
     checkAuth();
+    returnMain();
   }
 
   console.log('Авторизован');
