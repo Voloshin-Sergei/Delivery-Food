@@ -26,18 +26,31 @@ const modalBody = document.querySelector('.modal-body');
 const modalPrice = document.querySelector('.modal-pricetag');
 const buttonClearCart = document.querySelector('.clear-cart');
 
+
 let login = localStorage.getItem('delivery');
-const cart = [];
+
+const cart = JSON.parse(localStorage.getItem(`delivery_${login}`)) || [];
+
+function saveCart() {
+  localStorage.setItem(`delivery_${login}`, JSON.stringify(cart));
+}
+
+function downLoadCart() {
+  if (localStorage.getItem(`delivery_${login}`)) {
+    const data = JSON.parse(localStorage.getItem(`delivery_${login}`));
+    cart.push(...data)
+  }
+}
 
 const getData = async function(url) {
 
-  const response = await fetch(url);
+const response = await fetch(url);
 
-    if (!response.ok) {
-      throw new Error(`Ошибка по адресу ${url}, статус ошибки ${response.status}!`);
-    }
+  if (!response.ok) {
+    throw new Error(`Ошибка по адресу ${url}, статус ошибки ${response.status}!`);
+  }
 
-    return await response.json();
+  return await response.json();
 };
 
 function validName (str) {
@@ -73,6 +86,7 @@ function authorized() {
 
   function logOut() {
     login = null;
+    cart.length = 0;
     localStorage.removeItem('delivery');
     buttonAuth.style.display = '';
     userName.style.display = '';
@@ -83,7 +97,6 @@ function authorized() {
     returnMain();
   }
 
-  console.log('Авторизован');
   userName.textContent = login;
   buttonAuth.style.display = 'none';
   userName.style.display = 'inline';
@@ -93,7 +106,6 @@ function authorized() {
 }
 
 function notAuthorized() {
-  console.log('Не авторизован');
 
     function logIn(event) {
       event.preventDefault();
@@ -102,7 +114,7 @@ function notAuthorized() {
         login = loginInput.value;
         localStorage.setItem('delivery', login);
         toggleModalAuth();
-
+        downLoadCart();
         buttonAuth.removeEventListener('click', toggleModalAuth);
         closeAuth.removeEventListener('click', toggleModalAuth);
         logInForm.removeEventListener('submit', logIn);
@@ -248,6 +260,7 @@ function addToCart(event) {
         count: 1
       });
     }
+    saveCart();
   }
 }
 
@@ -270,6 +283,7 @@ function renderCart() {
   });
   const totalPrice = cart.reduce(function(result, item) { return result + (parseFloat(item.cost) * item.count); }, 0);
   modalPrice.textContent = totalPrice + ' ₽';
+  saveCart();
 }
 
 function changeCount(event) {
@@ -288,7 +302,6 @@ function changeCount(event) {
     if (target.classList.contains('counter-plus')) food.count++;
     renderCart();
   }
-
 } 
 
 function init() {
@@ -304,6 +317,7 @@ function init() {
   buttonClearCart.addEventListener('click', function() {
     cart.length = 0;
     renderCart();
+    toggleModal();
   });
 
   modalBody.addEventListener('click', changeCount);
